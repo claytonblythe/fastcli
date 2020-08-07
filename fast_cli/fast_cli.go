@@ -14,10 +14,14 @@ func Get_urls() {
 	js_url := get_js_url()
 	token := get_token(js_url)
 	fmt.Println(token)
-	get_url_list(token)
+	client_ip, display_strings, target_urls := get_url_list(token)
+
+	fmt.Println(client_ip)
+	fmt.Println(display_strings)
+	fmt.Println(target_urls)
 }
 
-func get_url_list(token string) {
+func get_url_list(token string) (string, []string, []string) {
 	s := []string{"https://api.fast.com/netflix/speedtest/v2?https=true&token=", token, "&urlCount=5"}
 	url := strings.Join(s, "")
 	response, err := http.Get(url)
@@ -33,25 +37,26 @@ func get_url_list(token string) {
 	if err := json.Unmarshal([]byte(responseString), &obj); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(obj)
-	fmt.Println(obj["targets"])
 	targets := obj["targets"].([]interface{})
-	client := obj["client"]
-	client_ip := obj["client"].(map[string]interface{})["ip"]
-	fmt.Println(targets)
-	fmt.Println(client)
-	fmt.Println(client_ip)
+	client_ip := obj["client"].(map[string]interface{})["ip"].(string)
+	// client_location :=  obj["client"].(map[string]interface{})["ip"].(string)
+	display_targets := []string{}
+	target_urls := []string{}
 	for _, target := range targets {
 		target := target.(map[string]interface{})
 		// element is the element from someSlice for where we are
-		url := target["url"]
+		url := target["url"].(string)
 		fmt.Println(url)
 		location := target["location"].(map[string]interface{})
-		city := location["city"]
-		country := location["country"]
-		fmt.Println(city)
-		fmt.Println(country)
+		city := location["city"].(string)
+		country := location["country"].(string)
+		s := []string{city, country, url}
+		display_target := strings.Join(s, ", ")
+		display_targets = append(display_targets, display_target)
+		target_urls = append(target_urls, url)
 	}
+
+	return client_ip, display_targets, target_urls
 
 }
 
