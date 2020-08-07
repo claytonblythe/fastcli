@@ -35,17 +35,24 @@ func get_url_list(token string) {
 	}
 	fmt.Println(obj)
 	fmt.Println(obj["targets"])
-	targets := obj["targets"]
+	targets := obj["targets"].([]interface{})
 	client := obj["client"]
+	client_ip := obj["client"].(map[string]interface{})["ip"]
 	fmt.Println(targets)
 	fmt.Println(client)
-	// urls := make([]string, len(targets))
-	// for _, element := range targets {
-	// 	// index is the index where we are
-	// 	// element is the element from someSlice for where we are
-	// 	urls = append(urls, element)
-	// }
-	// fmt.Println(urls)
+	fmt.Println(client_ip)
+	for _, target := range targets {
+		target := target.(map[string]interface{})
+		// element is the element from someSlice for where we are
+		url := target["url"]
+		fmt.Println(url)
+		location := target["location"].(map[string]interface{})
+		city := location["city"]
+		country := location["country"]
+		fmt.Println(city)
+		fmt.Println(country)
+	}
+
 }
 
 func get_token(url string) string {
