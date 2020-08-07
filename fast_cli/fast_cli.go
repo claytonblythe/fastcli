@@ -1,6 +1,7 @@
 package fast_cli
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -8,12 +9,43 @@ import (
 	"strings"
 )
 
-
 func Get_urls() {
 	fmt.Println("get_urls!")
 	js_url := get_js_url()
 	token := get_token(js_url)
 	fmt.Println(token)
+	get_url_list(token)
+}
+
+func get_url_list(token string) {
+	s := []string{"https://api.fast.com/netflix/speedtest/v2?https=true&token=", token, "&urlCount=5"}
+	url := strings.Join(s, "")
+	response, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer response.Body.Close()
+
+	responseData, err := ioutil.ReadAll(response.Body)
+
+	responseString := string(responseData)
+	obj := map[string]interface{}{}
+	if err := json.Unmarshal([]byte(responseString), &obj); err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(obj)
+	fmt.Println(obj["targets"])
+	targets := obj["targets"]
+	client := obj["client"]
+	fmt.Println(targets)
+	fmt.Println(client)
+	// urls := make([]string, len(targets))
+	// for _, element := range targets {
+	// 	// index is the index where we are
+	// 	// element is the element from someSlice for where we are
+	// 	urls = append(urls, element)
+	// }
+	// fmt.Println(urls)
 }
 
 func get_token(url string) string {
