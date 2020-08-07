@@ -7,5 +7,4 @@ import (
 
 func main() {
 	fmt.Println("Success!")
-
 }
