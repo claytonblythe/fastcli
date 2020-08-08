@@ -1,6 +1,6 @@
-## Fastcli
+## fastcli
 
-fastcli is a command line interface (CLI) for doing network testing and speedtesting using Go coroutines and http://fast.com/. It is memory efficient, performant, and descriptive in the information that it provides, including test servers/locations used, Round Trip Time (RTT), Client IP Address & Location, [fast.com](http://fast.com/) endpoint used, test duration, data downloaded, and speed in Megabits per second. 
+fastcli is a command line interface (CLI) for doing network testing and speedtesting, written in Go and utilizing http://fast.com/. It is memory efficient, performant, and descriptive in the information that it provides. Information includes test servers/locations used, Round Trip Time (RTT), Client IP Address & Location, [fast.com](http://fast.com/) endpoint used, test duration, data downloaded, and speed in Megabits per second. A comparable result is achieved similar to running the test in Chrome, though fastcli may provide more detailed information.
 
 ### Installation
 
