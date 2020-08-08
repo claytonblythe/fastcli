@@ -2,7 +2,6 @@ package fast_cli
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -30,8 +29,9 @@ func make_request(url string, results chan int) {
 }
 
 func Test_Speed() {
-	client_display, display_strings, url_list := get_urls()
-	color.HiGreen("Client: %s\n\n", client_display)
+	client_display, display_strings, url_list, fast_endpoint := get_urls()
+	color.HiGreen("\nClient: %s\n", client_display)
+	color.HiGreen("Fast.com endpoint: %s\n\n", fast_endpoint)
 	color.HiGreen("Server locations:")
 	for _, display_string := range display_strings {
 		color.HiBlue(display_string)
@@ -50,28 +50,27 @@ func Test_Speed() {
 		total_data_downloaded = total_data_downloaded + this_url_data_downloaded
 	}
 	duration := time.Since(start).Seconds()
-	fmt.Println(total_data_downloaded)
-	fmt.Println(duration)
+	color.HiGreen("\nDuration: %.2f seconds\n", duration)
 	mb := float64(total_data_downloaded) / float64(125000)
-	fmt.Println(mb)
+	color.HiGreen("Bytes downloaded: %v\n", total_data_downloaded)
 	mb_per_sec := mb / duration
-	fmt.Println(mb_per_sec)
+	color.HiGreen("Mb/s Speed: %.2f\n", mb_per_sec)
+
 }
 
-func get_urls() (string, []string, []string) {
+func get_urls() (string, []string, []string, string) {
 	js_url := get_js_url()
 	token := get_token(js_url)
-	client_display, display_strings, url_list := get_url_list(token)
-	return client_display, display_strings, url_list
+	client_display, display_strings, url_list, fast_endpoint := get_url_list(token)
+	return client_display, display_strings, url_list, fast_endpoint
 }
 
-func get_url_list(token string) (string, []string, []string) {
+func get_url_list(token string) (string, []string, []string, string) {
 	s := []string{"https://api.fast.com/netflix/speedtest/v2?https=true&token=", token, "&urlCount=5"}
-	url := strings.Join(s, "")
-	color.HiGreen("\nFast.com endpoint: %s\n", url)
-	response, err := http.Get(url)
+	fast_endpoint := strings.Join(s, "")
+	response, err := http.Get(fast_endpoint)
 	if err != nil {
-		color.HiRed(url)
+		color.HiRed(fast_endpoint)
 		log.Fatal(err)
 	}
 	defer response.Body.Close()
@@ -104,7 +103,7 @@ func get_url_list(token string) (string, []string, []string) {
 		target_urls = append(target_urls, url)
 	}
 
-	return client_display, targets_display, target_urls
+	return client_display, targets_display, target_urls, fast_endpoint
 
 }
 
