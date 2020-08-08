@@ -2,11 +2,12 @@ package fast_cli
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 func Get_urls() {
@@ -14,10 +15,10 @@ func Get_urls() {
 	token := get_token(js_url)
 	client_display, display_strings, _ := get_url_list(token)
 
-	fmt.Printf("Client testing from %s\n\n", client_display)
-	fmt.Println("Server locations:")
+	color.HiGreen("Client: %s\n\n", client_display)
+	color.HiGreen("Server locations:")
 	for _, display_string := range display_strings {
-		fmt.Println(display_string)
+		color.HiBlue(display_string)
 	}
 }
 
