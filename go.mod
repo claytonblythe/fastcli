@@ -1,4 +1,4 @@
-module github.com/claytonblythe/fast_cli
+module github.com/claytonblythe/fastcli
 
 go 1.12
 

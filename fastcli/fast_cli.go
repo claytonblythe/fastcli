@@ -1,4 +1,4 @@
-package fast_cli
+package fastcli
 
 import (
 	"encoding/json"
