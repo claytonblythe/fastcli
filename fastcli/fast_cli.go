@@ -23,9 +23,10 @@ func make_request(url string, results chan int) {
 	}
 	total_read := 0
 	for {
-		buf := make([]byte, 1024)
+		buf := make([]byte, 16384)
 		num_bytes, err := resp.Body.Read(buf)
 		if err != nil {
+			total_read = total_read + num_bytes
 			break
 		}
 		total_read = total_read + num_bytes
