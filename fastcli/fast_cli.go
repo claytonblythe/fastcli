@@ -39,7 +39,7 @@ func Test_Speed() {
 	client_display, _, url_list, fast_endpoint := get_urls()
 	color.HiGreen("\nTesting Download Speed...")
 	color.HiGreen("Client: %s\n", client_display)
-	color.HiGreen("Fast.com endpoint: %s\n\n", fast_endpoint)
+	color.HiBlue("Fast.com endpoint: %s\n\n", fast_endpoint)
 
 	num_urls := len(url_list)
 	results := make(chan int, num_urls*2)
