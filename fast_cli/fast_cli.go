@@ -54,7 +54,7 @@ func Test_Speed() {
 	mb := float64(total_data_downloaded) / float64(125000)
 	color.HiGreen("Bytes downloaded: %v\n", total_data_downloaded)
 	mb_per_sec := mb / duration
-	color.HiGreen("Speed: %.2f Mb/s \n", mb_per_sec)
+	color.HiGreen("Speed: %.2f Mbps \n", mb_per_sec)
 
 }
 
