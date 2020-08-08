@@ -10,6 +10,24 @@ import (
 	"github.com/fatih/color"
 )
 
+func make_request(url string) int {
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	total_read := 0
+	for {
+		buf := make([]byte, 1024)
+		num_bytes, err := resp.Body.Read(buf)
+		if err != nil {
+			break
+		}
+		total_read = total_read + num_bytes
+	}
+	log.Println(total_read)
+	return total_read
+}
+
 func Get_urls() {
 	js_url := get_js_url()
 	token := get_token(js_url)
@@ -20,6 +38,8 @@ func Get_urls() {
 	for _, display_string := range display_strings {
 		color.HiBlue(display_string)
 	}
+
+	make_request("https://ipv4-c305-sjc002-dev-ix.1.oca.nflxvideo.net/speedtest?c=us&n=46562&v=5&e=1596855076&t=pjbIDwBG7aTpFYAjWLYzRodG-g0")
 }
 
 func get_url_list(token string) (string, []string, []string) {
