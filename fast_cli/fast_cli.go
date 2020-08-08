@@ -10,15 +10,15 @@ import (
 )
 
 func Get_urls() {
-	fmt.Println("get_urls!")
 	js_url := get_js_url()
 	token := get_token(js_url)
-	fmt.Println(token)
-	client_ip, display_strings, target_urls := get_url_list(token)
+	client_display, display_strings, _ := get_url_list(token)
 
-	fmt.Println(client_ip)
-	fmt.Println(display_strings)
-	fmt.Println(target_urls)
+	fmt.Printf("Client testing from %s\n\n", client_display)
+	fmt.Println("Server locations:")
+	for _, display_string := range display_strings {
+		fmt.Println(display_string)
+	}
 }
 
 func get_url_list(token string) (string, []string, []string) {
@@ -39,24 +39,26 @@ func get_url_list(token string) (string, []string, []string) {
 	}
 	targets := obj["targets"].([]interface{})
 	client_ip := obj["client"].(map[string]interface{})["ip"].(string)
-	// client_location :=  obj["client"].(map[string]interface{})["ip"].(string)
-	display_targets := []string{}
+	client_location := obj["client"].(map[string]interface{})["location"]
+	client_city := client_location.(map[string]interface{})["city"].(string)
+	client_country := client_location.(map[string]interface{})["country"].(string)
+	client_display := strings.Join([]string{client_city, client_country, client_ip}, ", ")
+	targets_display := []string{}
 	target_urls := []string{}
 	for _, target := range targets {
 		target := target.(map[string]interface{})
 		// element is the element from someSlice for where we are
 		url := target["url"].(string)
-		fmt.Println(url)
 		location := target["location"].(map[string]interface{})
 		city := location["city"].(string)
 		country := location["country"].(string)
 		s := []string{city, country, url}
-		display_target := strings.Join(s, ", ")
-		display_targets = append(display_targets, display_target)
+		target_display := strings.Join(s, ", ")
+		targets_display = append(targets_display, target_display)
 		target_urls = append(target_urls, url)
 	}
 
-	return client_ip, display_targets, target_urls
+	return client_display, targets_display, target_urls
 
 }
 
