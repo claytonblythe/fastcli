@@ -25,8 +25,10 @@ func Get_urls() {
 func get_url_list(token string) (string, []string, []string) {
 	s := []string{"https://api.fast.com/netflix/speedtest/v2?https=true&token=", token, "&urlCount=5"}
 	url := strings.Join(s, "")
+	color.HiGreen("\nFast.com endpoint: %s\n", url)
 	response, err := http.Get(url)
 	if err != nil {
+		color.HiRed(url)
 		log.Fatal(err)
 	}
 	defer response.Body.Close()
