@@ -2,15 +2,17 @@ package fast_cli
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 )
 
-func make_request(url string) int {
+func make_request(url string, results chan int) {
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -24,22 +26,43 @@ func make_request(url string) int {
 		}
 		total_read = total_read + num_bytes
 	}
-	log.Println(total_read)
-	return total_read
+	results <- total_read
 }
 
-func Get_urls() {
-	js_url := get_js_url()
-	token := get_token(js_url)
-	client_display, display_strings, _ := get_url_list(token)
-
+func Test_Speed() {
+	client_display, display_strings, url_list := get_urls()
 	color.HiGreen("Client: %s\n\n", client_display)
 	color.HiGreen("Server locations:")
 	for _, display_string := range display_strings {
 		color.HiBlue(display_string)
 	}
 
-	make_request("https://ipv4-c305-sjc002-dev-ix.1.oca.nflxvideo.net/speedtest?c=us&n=46562&v=5&e=1596855076&t=pjbIDwBG7aTpFYAjWLYzRodG-g0")
+	num_urls := len(url_list)
+	results := make(chan int, num_urls*2)
+	start := time.Now()
+	for _, url := range url_list {
+		go make_request(url, results)
+	}
+
+	total_data_downloaded := 0
+	for i := 1; i <= num_urls; i++ {
+		this_url_data_downloaded := <-results
+		total_data_downloaded = total_data_downloaded + this_url_data_downloaded
+	}
+	duration := time.Since(start).Seconds()
+	fmt.Println(total_data_downloaded)
+	fmt.Println(duration)
+	mb := float64(total_data_downloaded) / float64(125000)
+	fmt.Println(mb)
+	mb_per_sec := mb / duration
+	fmt.Println(mb_per_sec)
+}
+
+func get_urls() (string, []string, []string) {
+	js_url := get_js_url()
+	token := get_token(js_url)
+	client_display, display_strings, url_list := get_url_list(token)
+	return client_display, display_strings, url_list
 }
 
 func get_url_list(token string) (string, []string, []string) {

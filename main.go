@@ -7,5 +7,5 @@ import (
 )
 
 func main() {
-	fast_cli.Get_urls()
+	fast_cli.Test_Speed()
 }
