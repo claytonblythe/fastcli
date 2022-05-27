@@ -6,7 +6,7 @@ fastcli is a command line interface (CLI) for doing network testing and speedtes
 
 Assuming you already have Golang installed on your machiine, simply run
 ```
-go get github.com/claytonblythe/fastcli
+go install github.com/claytonblythe/fastcli@latest
 ```
 
 
